@@ -1,0 +1,36 @@
+﻿#!/usr/bin/env bash
+set -e
+
+ensure_node() {
+  if command -v node >/dev/null 2>&1; then
+    return 0
+  fi
+
+  if [ "${AUTO_INSTALL_NODE:-0}" = "1" ]; then
+    echo "[BOOT] Node.js not found. Trying auto-install (AUTO_INSTALL_NODE=1)..."
+    if command -v apt-get >/dev/null 2>&1; then
+      export DEBIAN_FRONTEND=noninteractive
+      apt-get update -y
+      apt-get install -y curl ca-certificates
+      curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+      apt-get install -y nodejs
+    elif command -v apk >/dev/null 2>&1; then
+      apk add --no-cache nodejs npm
+    elif command -v yum >/dev/null 2>&1; then
+      yum install -y nodejs npm
+    else
+      echo "[BOOT] Could not auto-install Node.js on this distro."
+      return 1
+    fi
+    node -v
+    return 0
+  fi
+
+  echo "[BOOT] Node.js not found. Install Node.js 18+ at container/server level."
+  echo "[BOOT] Tip: use Dockerfile deployment, or set AUTO_INSTALL_NODE=1 only if RAM is sufficient."
+  return 1
+}
+
+ensure_node || true
+python3 -m IMMORTAL_MUSIC
+
