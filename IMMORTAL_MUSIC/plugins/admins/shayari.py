@@ -155,10 +155,10 @@ async def mentionall(client, message):
 
 #
 
-@app.on_message(filters.command(["shstop", "shayarioff"]))
+@app.on_message(filters.command(["shstop", "shayarioff", "cancel", "cancerl"]))
 async def cancel_spam(client, message):
     if not message.chat.id in spam_chats:
-        return await message.reply("ð‚ð®ð«ð«ðžð§ð­ð¥ð² ðˆ'ð¦ ðð¨ð­ ..")
+        return await message.reply("No shayari tagging process is running.")
     is_admin = False
     try:
         participant = await client.get_chat_member(message.chat.id, message.from_user.id)
@@ -171,11 +171,10 @@ async def cancel_spam(client, message):
         ):
             is_admin = True
     if not is_admin:
-        return await message.reply("ð˜ð¨ð® ð€ð«ðž ðð¨ð­ ð€ðð¦ð¢ð§ ððšð›ð², ðŽð§ð¥ð² ð€ðð¦ð¢ð§ð¬ ð‚ðšð§ ð“ðšð  ðŒðžð¦ð›ðžð«ð¬.")
+        return await message.reply("Only admins can stop the shayari tagging process.")
     else:
         try:
             spam_chats.remove(message.chat.id)
         except:
             pass
-        return await message.reply("â™¦ á´˜Ê€á´á´„á´‡ss sá´›á´á´˜á´˜á´‡á´… sá´œá´„á´„á´‡ssÒ“á´œÊŸÊŸÊ â™¦")
-
+        return await message.reply("Shayari tagging stopped successfully.")

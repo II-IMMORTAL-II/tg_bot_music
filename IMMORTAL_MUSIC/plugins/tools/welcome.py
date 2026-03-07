@@ -162,7 +162,11 @@ async def greet_new_member(_, member: ChatMemberUpdated):
             )
             button_text = "View New Member"
             add_button_text = "Add Me To Group"
-            deep_link = f"tg://openmessage?user_id={user.id}"
+            deep_link = (
+                f"https://t.me/{user.username}"
+                if user.username
+                else f"tg://user?id={user.id}"
+            )
             add_link = f"https://t.me/{app.username}?startgroup=true"
             username = f"@{user.username}" if user.username else "N/A"
             temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
@@ -189,4 +193,3 @@ async def greet_new_member(_, member: ChatMemberUpdated):
             )
         except Exception as e:
             LOGGER.error(e)
-

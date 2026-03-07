@@ -54,7 +54,7 @@ async def tag_all_users(_,message):
         except Exception:
             pass        
            
-@app.on_message(filters.command("alloff") & ~filters.private)
+@app.on_message(filters.command(["alloff", "cancel", "cancerl"]) & ~filters.private)
 async def cancelcmd(_, message):
     chat_id = message.chat.id
     if chat_id in SPAM_CHATS:
@@ -62,10 +62,9 @@ async def cancelcmd(_, message):
             SPAM_CHATS.remove(chat_id)
         except Exception:
             pass   
-        return await message.reply_text("**á´›á´€É¢ á´€ÊŸÊŸ sá´œá´„á´„á´‡ssÒ“á´œÊŸÊŸÊ sá´›á´á´˜á´˜á´‡á´…!**")     
+        return await message.reply_text("Tag-all process stopped successfully.")
                                      
     else :
-        await message.reply_text("**É´á´ á´˜Ê€á´á´„á´‡ss á´É´É¢á´ÉªÉ´É¢!**")  
+        await message.reply_text("No tagging process is running.")  
         return       
-
 

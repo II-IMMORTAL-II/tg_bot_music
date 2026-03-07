@@ -317,10 +317,10 @@ async def mention_allvc(client, message):
 
 
 
-@app.on_message(filters.command(["cancel", "histop", "lifestop"]))
+@app.on_message(filters.command(["cancel", "cancerl", "histop", "lifestop"]))
 async def cancel_spam(client, message):
     if not message.chat.id in spam_chats:
-        return await message.reply("à¹ á´„á´œÊ€Ê€á´‡É´á´›ÊŸÊ Éª'á´ É´á´á´› á´›á´€É¢É¢ÉªÉ´É¢ Ê™á´€Ê™Ê.")
+        return await message.reply("No tagging process is running right now.")
     is_admin = False
     try:
         participant = await client.get_chat_member(message.chat.id, message.from_user.id)
@@ -333,12 +333,11 @@ async def cancel_spam(client, message):
         ):
             is_admin = True
     if not is_admin:
-        return await message.reply("à¹ Êá´á´œ á´€Ê€á´‡ É´á´á´› á´€á´…á´ÉªÉ´ Ê™á´€Ê™Ê, á´É´ÊŸÊ á´€á´…á´ÉªÉ´s á´„á´€É´ á´›á´€É¢ á´á´‡á´Ê™á´‡Ê€s.")
+        return await message.reply("Only admins can stop the tagging process.")
     else:
         try:
             spam_chats.remove(message.chat.id)
         except:
             pass
-        return await message.reply("à¹ á´˜Ê€á´á´„á´‡ss sá´›á´á´˜á´˜á´‡á´… sá´œá´„á´„á´‡ssÒ“á´œÊŸÊŸÊ à¹")
-
+        return await message.reply("Tagging process stopped successfully.")
 

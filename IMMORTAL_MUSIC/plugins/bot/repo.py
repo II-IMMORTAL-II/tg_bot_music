@@ -48,4 +48,3 @@ InlineKeyboardButton("ð—–Êœá´€É´É´á´‡ÊŸ", url=config.SUPP
         caption=start_txt.format(owner=owner_tag),
         reply_markup=reply_markup
     )
-
