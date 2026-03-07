@@ -51,6 +51,7 @@ logging.getLogger("asyncio").addFilter(_AsyncioSocketSendFilter())
 logging.getLogger("httpx").setLevel(logging.ERROR)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)
+logging.getLogger("telethon").setLevel(logging.WARNING)
 
 
 def LOGGER(name: str) -> logging.Logger:

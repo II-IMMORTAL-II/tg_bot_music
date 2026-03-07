@@ -98,7 +98,7 @@ def welcomepic(pic, user, chatname, id, uname, brightness_factor=1.3):
 
 @app.on_message(filters.command("welcome") & ~filters.private)
 async def auto_state(_, message):
-    usage = "**á´œsá´€É¢á´‡:**\n**â¦¿ /welcome [on|off]**"
+    usage = "**Usage:**\n**/welcome [on|off]**"
     if len(message.command) == 1:
         return await message.reply_text(usage)
     chat_id = message.chat.id
@@ -111,20 +111,24 @@ async def auto_state(_, message):
         state = message.text.split(None, 1)[1].strip().lower()
         if state == "off":
             if A:
-                await message.reply_text("**á´¡á´‡ÊŸá´„á´á´á´‡ É´á´á´›ÉªÒ“Éªá´„á´€á´›Éªá´É´ á´€ÊŸÊ€á´‡á´€á´…Ê á´…Éªsá´€Ê™ÊŸá´‡á´… !**")
+                await message.reply_text("**Welcome notification is already disabled.**")
             else:
                 await wlcm.add_wlcm(chat_id)
-                await message.reply_text(f"**á´…Éªsá´€Ê™ÊŸá´‡á´… á´¡á´‡ÊŸá´„á´á´á´‡ É´á´á´›ÉªÒ“Éªá´„á´€á´›Éªá´É´ ÉªÉ´** {message.chat.title}")
+                await message.reply_text(
+                    f"**Disabled welcome notification in** {message.chat.title}"
+                )
         elif state == "on":
             if not A:
-                await message.reply_text("**á´‡É´á´€Ê™ÊŸá´‡ á´¡á´‡ÊŸá´„á´á´á´‡ É´á´á´›ÉªÒ“Éªá´„á´€á´›Éªá´É´.**")
+                await message.reply_text("**Welcome notification is already enabled.**")
             else:
                 await wlcm.rm_wlcm(chat_id)
-                await message.reply_text(f"**á´‡É´á´€Ê™ÊŸá´‡á´… á´¡á´‡ÊŸá´„á´á´á´‡ É´á´á´›ÉªÒ“Éªá´„á´€á´›Éªá´É´ ÉªÉ´ ** {message.chat.title}")
+                await message.reply_text(
+                    f"**Enabled welcome notification in** {message.chat.title}"
+                )
         else:
             await message.reply_text(usage)
     else:
-        await message.reply("**sá´Ê€Ê€Ê á´É´ÊŸÊ á´€á´…á´ÉªÉ´s á´„á´€É´ á´‡É´á´€Ê™ÊŸá´‡ á´¡á´‡ÊŸá´„á´á´á´‡ É´á´á´›ÉªÒ“Éªá´„á´€á´›Éªá´É´!**")
+        await message.reply("**Only admins can change welcome settings.**")
 
 
 
@@ -156,26 +160,27 @@ async def greet_new_member(_, member: ChatMemberUpdated):
             welcomeimg = welcomepic(
                 pic, user.first_name, member.chat.title, user.id, user.username
             )
-            button_text = "à¹ á´ Éªá´‡á´¡ É´á´‡á´¡ á´á´‡á´Ê™á´‡Ê€ à¹"
-            add_button_text = "âœ™ á´‹Éªá´…É´á´€á´˜ á´á´‡ âœ™"
+            button_text = "View New Member"
+            add_button_text = "Add Me To Group"
             deep_link = f"tg://openmessage?user_id={user.id}"
             add_link = f"https://t.me/{app.username}?startgroup=true"
+            username = f"@{user.username}" if user.username else "N/A"
             temp.MELCOW[f"welcome-{member.chat.id}"] = await app.send_photo(
                 member.chat.id,
                 photo=welcomeimg,
                 caption=f"""
-**âŽŠâ”€â”€â”€â”€â”€â˜µ á´¡á´‡ÊŸá´„á´á´á´‡ â˜µâ”€â”€â”€â”€â”€âŽŠ**
+**┏━━━━━✦ Welcome ✦━━━━━┓**
 
-**â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬**
+**▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬**
 
-**â˜‰ É´á´€á´á´‡ â§½** {user.mention}
-**â˜‰ Éªá´… â§½** `{user.id}`
-**â˜‰ á´œ_É´á´€á´á´‡ â§½** @{user.username}
-**â˜‰ á´›á´á´›á´€ÊŸ á´á´‡á´Ê™á´‡Ê€s â§½** {count}
+**• Name:** {user.mention}
+**• ID:** `{user.id}`
+**• Username:** {username}
+**• Total Members:** {count}
 
-**â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬â–­â–¬**
+**▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬**
 
-**âŽ‰â”€â”€â”€â”€â”€â”€â–¢âœ­ ä¾– âœ­â–¢â”€â”€â”€â”€â”€â”€âŽ‰**
+**┗━━━━━━━✦✦✦━━━━━━━┛**
 """,
                 reply_markup=InlineKeyboardMarkup([
                     [InlineKeyboardButton(button_text, url=deep_link)],
@@ -184,5 +189,4 @@ async def greet_new_member(_, member: ChatMemberUpdated):
             )
         except Exception as e:
             LOGGER.error(e)
-
 

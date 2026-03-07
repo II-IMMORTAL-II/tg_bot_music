@@ -69,7 +69,7 @@ class Userbot(Client):
             try:
                 await self.one.send_message(config.LOGGER_ID, "Assistant Started")
             except:
-                LOGGER(__name__).error(
+                LOGGER(__name__).warning(
                     "Assistant Account 1 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin!"
                 )
                 LOGGER(__name__).warning("Continuing without log-group message for assistant 1.")
@@ -92,7 +92,7 @@ class Userbot(Client):
             try:
                 await self.two.send_message(config.LOGGER_ID, "Assistant Started")
             except:
-                LOGGER(__name__).error(
+                LOGGER(__name__).warning(
                     "Assistant Account 2 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin!"
                 )
                 LOGGER(__name__).warning("Continuing without log-group message for assistant 2.")
@@ -115,7 +115,7 @@ class Userbot(Client):
             try:
                 await self.three.send_message(config.LOGGER_ID, "Assistant Started")
             except:
-                LOGGER(__name__).error(
+                LOGGER(__name__).warning(
                     "Assistant Account 3 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
                 LOGGER(__name__).warning("Continuing without log-group message for assistant 3.")
@@ -138,7 +138,7 @@ class Userbot(Client):
             try:
                 await self.four.send_message(config.LOGGER_ID, "Assistant Started")
             except:
-                LOGGER(__name__).error(
+                LOGGER(__name__).warning(
                     "Assistant Account 4 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
                 LOGGER(__name__).warning("Continuing without log-group message for assistant 4.")
@@ -161,7 +161,7 @@ class Userbot(Client):
             try:
                 await self.five.send_message(config.LOGGER_ID, "Assistant Started")
             except:
-                LOGGER(__name__).error(
+                LOGGER(__name__).warning(
                     "Assistant Account 5 has failed to access the log Group. Make sure that you have added your assistant to your log group and promoted as admin! "
                 )
                 LOGGER(__name__).warning("Continuing without log-group message for assistant 5.")

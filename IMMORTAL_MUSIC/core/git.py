@@ -2,8 +2,13 @@ import asyncio
 import shlex
 from typing import Tuple
 
-from git import Repo
-from git.exc import GitCommandError, InvalidGitRepositoryError
+try:
+    from git import Repo
+    from git.exc import GitCommandError, InvalidGitRepositoryError
+except Exception:  # pragma: no cover - optional dependency at runtime
+    Repo = None
+    GitCommandError = Exception
+    InvalidGitRepositoryError = Exception
 
 import config
 
@@ -30,6 +35,11 @@ def install_req(cmd: str) -> Tuple[str, str, int, int]:
 
 
 def git():
+    if Repo is None:
+        LOGGER(__name__).warning(
+            "GitPython not installed. Skipping git sync step and continuing startup."
+        )
+        return
     REPO_LINK = config.UPSTREAM_REPO
     if config.GIT_TOKEN:
         GIT_USERNAME = REPO_LINK.split("com/")[1].split("/")[0]
