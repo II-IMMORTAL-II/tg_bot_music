@@ -129,7 +129,7 @@ class YouTubeAPI:
             "--cookies", cookies_file,
             "-g",
             "-f",
-            "best[height<=?720][width<=?1280]",
+            "best[height<=720][width<=1280]",
             f"{link}",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
@@ -303,7 +303,7 @@ class YouTubeAPI:
 
         def video_dl():
             ydl_optssx = {
-                "format": "(bestvideo[height<=?720][width<=?1280][ext=mp4])+(bestaudio[ext=m4a])",
+                "format": "(bestvideo[height<=720][width<=1280][ext=mp4])+(bestaudio[ext=m4a])",
                 "outtmpl": "downloads/%(id)s.%(ext)s",
                 "geo_bypass": True,
                 "nocheckcertificate": True,
@@ -376,7 +376,7 @@ class YouTubeAPI:
                     "--cookies", cookies_file,
                     "-g",
                     "-f",
-                    "best[height<=?720][width<=?1280]",
+                    "best[height<=720][width<=1280]",
                     f"{link}",
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
@@ -391,4 +391,3 @@ class YouTubeAPI:
             direct = True
             downloaded_file = await loop.run_in_executor(None, audio_dl)
         return downloaded_file, direct
-

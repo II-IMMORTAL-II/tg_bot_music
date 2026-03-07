@@ -14,7 +14,7 @@ from pyrogram import filters
 load_dotenv()
 
 from IMMORTAL_MUSIC import app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.misc import db
 from IMMORTAL_MUSIC.utils.database import get_assistant, get_authuser_names, get_cmode
 from IMMORTAL_MUSIC.utils.decorators import ActualAdminCB, AdminActual, language
@@ -107,7 +107,7 @@ async def restartbot(client, message: Message, _):
 
     
 @app.on_message(
-    filters.command("nobita")
+    filters.command("immortal")
     & filters.private
     & filters.user(config.OWNER_ID)
    )
@@ -165,6 +165,7 @@ async def stop_download(client, CallbackQuery: CallbackQuery, _):
         except:
             return await CallbackQuery.answer(_["tg_8"], show_alert=True)
     await CallbackQuery.answer(_["tg_9"], show_alert=True)
+
 
 
 

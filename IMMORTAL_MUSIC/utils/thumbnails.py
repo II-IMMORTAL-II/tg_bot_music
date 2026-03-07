@@ -3,7 +3,7 @@
 
 # This source code is under MIT License ðŸ“œ Unauthorized forking, importing, or using this code without giving proper credit will result in legal action âš ï¸
  
-# ðŸ“© DM for permission : @ll_NOBITA_DEFAULTERS_ll
+# ðŸ“© DM for permission : @ll_IMMORTAL_DEFAULTERS_ll
 # =======================================================
 
 
@@ -141,9 +141,10 @@ async def get_thumb(videoid):
 # ======================================================
 # Â©ï¸ 2025-26 All Rights Reserved by Immortal Bots ðŸ˜Ž
 
-# ðŸ§‘â€ðŸ’» Developer : @ll_NOBITA_DEFAULTERS_ll
-# ðŸ”— Source link : https://github.com/iamnobita09/IMMORTAL_MUSIC.git
+# ðŸ§‘â€ðŸ’» Developer : @ll_IMMORTAL_DEFAULTERS_ll
+# ðŸ”— Source link : https://github.com/iamimmortal09/IMMORTAL_MUSIC.git
 # ðŸ“¢ Telegram channel : https://t.me/NOB1TA_SUPPORT
 # =======================================================
         
+
 

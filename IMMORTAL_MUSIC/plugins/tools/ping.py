@@ -2,7 +2,7 @@
 from pyrogram import filters
 from pyrogram.types import Message, InlineKeyboardMarkup
 from IMMORTAL_MUSIC import app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.utils import bot_sys_stats
 from IMMORTAL_MUSIC.utils.inline.extras import botplaylist_markup
 from IMMORTAL_MUSIC.utils.decorators.language import language
@@ -19,7 +19,7 @@ async def ping_com(client, message: Message, _):
         caption=_["ping_1"].format(app.mention),
     )
     start = datetime.now()
-    pytgping = await NOBITA.ping()
+    pytgping = await IMMORTAL.ping()
     UP, CPU, RAM, DISK = await bot_sys_stats()
     resp = (datetime.now() - start).microseconds / 1000
     await response.edit(
@@ -34,4 +34,5 @@ async def ping_com(client, message: Message, _):
         ),
         reply_markup=InlineKeyboardMarkup(botplaylist_markup(_)),
         )
+
 

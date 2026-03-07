@@ -4,7 +4,7 @@ from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from IMMORTAL_MUSIC import YouTube, app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.misc import SUDOERS, db
 from IMMORTAL_MUSIC.utils.database import (
     get_active_chats,
@@ -141,7 +141,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             return await CallbackQuery.answer(_["admin_1"], show_alert=True)
         await CallbackQuery.answer()
         await music_off(chat_id)
-        await NOBITA.pause_stream(chat_id)
+        await IMMORTAL.pause_stream(chat_id)
         await CallbackQuery.message.reply_text(
             _["admin_2"].format(mention),
         )
@@ -150,7 +150,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             return await CallbackQuery.answer(_["admin_3"], show_alert=True)
         await CallbackQuery.answer()
         await music_on(chat_id)
-        await NOBITA.resume_stream(chat_id)
+        await IMMORTAL.resume_stream(chat_id)
         await CallbackQuery.message.reply_text(
             _["admin_4"].format(mention),
         )
@@ -194,7 +194,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                             mention, CallbackQuery.message.chat.title
                         ),
                     )
-                    return await NOBITA.stop_stream(chat_id)
+                    return await IMMORTAL.stop_stream(chat_id)
                 except:
                     return
         else:
@@ -226,7 +226,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             except:
                 image = None
             try:
-                await NOBITA.skip_stream(chat_id, link, video=status, image=image)
+                await IMMORTAL.skip_stream(chat_id, link, video=status, image=image)
             except:
                 return await CallbackQuery.message.reply_text(_["call_6"])
             button = telegram_markup(_, chat_id)
@@ -270,7 +270,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             except:
                 image = None
             try:
-                await NOBITA.skip_stream(chat_id, file_path, video=status, image=image)
+                await IMMORTAL.skip_stream(chat_id, file_path, video=status, image=image)
             except:
                 return await mystic.edit_text(_["call_6"])
             button = stream_markup(_, videoid, chat_id)
@@ -291,7 +291,7 @@ async def del_back_playlist(client, CallbackQuery, _):
             await mystic.delete()
         elif "index_" in queued:
             try:
-                await NOBITA.skip_stream(chat_id, videoid, video=status)
+                await IMMORTAL.skip_stream(chat_id, videoid, video=status)
             except:
                 return await CallbackQuery.message.reply_text(_["call_6"])
             button = telegram_markup(_, chat_id)
@@ -314,7 +314,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                 except:
                     image = None
             try:
-                await NOBITA.skip_stream(chat_id, queued, video=status, image=image)
+                await IMMORTAL.skip_stream(chat_id, queued, video=status, image=image)
             except:
                 return await CallbackQuery.message.reply_text(_["call_6"])
             if videoid == "telegram":
@@ -421,4 +421,5 @@ async def markup_timer():
 
 
 asyncio.create_task(markup_timer())
+
 

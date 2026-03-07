@@ -24,7 +24,7 @@ from IMMORTAL_MUSIC.utils.database import (
     remove_active_video_chat,
 )
 from IMMORTAL_MUSIC.utils.decorators.language import language
-from IMMORTAL_MUSIC.utils.pastebin import NOBITABin
+from IMMORTAL_MUSIC.utils.pastebin import IMMORTALBin
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -152,4 +152,5 @@ async def restart_(_, message):
         "Â» Ê€á´‡sá´›á´€Ê€á´› á´˜Ê€á´á´„á´‡ss sá´›á´€Ê€á´›á´‡á´…, á´˜ÊŸá´‡á´€sá´‡ á´¡á´€Éªá´› Ò“á´Ê€ Ò“á´‡á´¡ sá´‡á´„á´É´á´…s á´œÉ´á´›ÉªÊŸ á´›Êœá´‡ Ê™á´á´› sá´›á´€Ê€á´›s..."
     )
     os.system(f"kill -9 {os.getpid()} && bash start")
+
 

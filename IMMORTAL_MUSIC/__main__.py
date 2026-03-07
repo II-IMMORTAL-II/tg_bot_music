@@ -2,6 +2,12 @@
 import sys
 import asyncio
 import importlib
+import traceback
+# Python 3.10+ removed the implicit event loop creation in asyncio.get_event_loop().
+# Pyrogram's sync.py calls get_event_loop() at import time, so we must create
+# and set a new event loop BEFORE importing anything from pyrogram.
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 from pyrogram import idle
 from pyrogram import utils as pyrogram_utils
@@ -11,7 +17,7 @@ if __package__ in (None, ""):
 
 import config
 from IMMORTAL_MUSIC import LOGGER, app, userbot
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.misc import sudo
 from IMMORTAL_MUSIC.plugins import ALL_MODULES
 from IMMORTAL_MUSIC.utils.database import get_banned_users, get_gbanned
@@ -32,7 +38,7 @@ async def init():
         and not config.STRING5
     ):
         LOGGER(__name__).error(
-            "ð’ð­ð«ð¢ð§ð  ð’ðžð¬ð¬ð¢ð¨ð§ ðð¨ð­ ð…ð¢ð¥ð¥ðžð, ðð¥ðžðšð¬ðž ð…ð¢ð¥ð¥ ð€ ðð²ð«ð¨ð ð«ðšð¦ V2 ð’ðžð¬ð¬ð¢ð¨ð§ðŸ¤¬"
+            "String session not filled. Please fill at least one Pyrogram V2 string session."
         )
 
     await sudo()
@@ -46,12 +52,25 @@ async def init():
     except:
         pass
     await app.start()
+    loaded_modules = 0
+    failed_modules = 0
     for all_module in ALL_MODULES:
-        importlib.import_module("IMMORTAL_MUSIC.plugins" + all_module)
-    LOGGER("IMMORTAL_MUSIC.plugins").info("All features loaded.")
+        module_name = "IMMORTAL_MUSIC.plugins" + all_module
+        try:
+            importlib.import_module(module_name)
+            loaded_modules += 1
+        except Exception as exc:
+            failed_modules += 1
+            LOGGER("IMMORTAL_MUSIC.plugins").warning(
+                f"Skipping plugin {module_name}: {type(exc).__name__}: {exc}"
+            )
+            LOGGER("IMMORTAL_MUSIC.plugins").debug(traceback.format_exc())
+    LOGGER("IMMORTAL_MUSIC.plugins").info(
+        f"Plugin load complete. loaded={loaded_modules}, failed={failed_modules}"
+    )
     await userbot.start()
-    await NOBITA.start()
-    await NOBITA.decorators()
+    await IMMORTAL.start()
+    await IMMORTAL.decorators()
     LOGGER("IMMORTAL_MUSIC").info("Immortal bot started.")
     await idle()
     await app.stop()
@@ -60,5 +79,6 @@ async def init():
 
 
 if __name__ == "__main__":
-    asyncio.get_event_loop().run_until_complete(init())
+    loop.run_until_complete(init())
+
 

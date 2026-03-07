@@ -22,11 +22,11 @@ async def must_join_channel(app: Client, msg: Message):
                 link = chat_info.invite_link
             try:
                 await msg.reply_photo(
-                    photo="https://files.catbox.moe/tcz7s6.jpg", caption=f"à¹ á´€á´„á´„á´Ê€á´…ÉªÉ´É¢ á´›á´ á´Ê á´…á´€á´›á´€Ê™á´€sá´‡ Êá´á´œ'á´ á´‡ É´á´á´› á´Šá´ÉªÉ´á´‡á´… [à¹sá´œá´˜á´˜á´Ê€á´›à¹]({link}) Êá´‡á´›, ÉªÒ“ Êá´á´œ á´¡á´€É´á´› á´›á´ á´œsá´‡ á´á´‡ á´›Êœá´‡É´ á´Šá´ÉªÉ´ [à¹sá´œá´˜á´˜á´Ê€á´›à¹]({link}) á´€É´á´… sá´›á´€Ê€á´› á´á´‡ á´€É¢á´€ÉªÉ´ ! ",
+                    photo="https://files.catbox.moe/tcz7s6.jpg", caption=f"According to my database, you have not joined [Support]({link}) yet. Join [Support]({link}) and then start me again.",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("â€¢ á´Šá´ÉªÉ´ â€¢", url=link),
+                                InlineKeyboardButton("Join Support", url=link),
                             ]
                         ]
                     )
@@ -35,5 +35,5 @@ async def must_join_channel(app: Client, msg: Message):
             except ChatWriteForbidden:
                 pass
     except ChatAdminRequired:
-        print(f"à¹ á´˜Ê€á´á´á´á´›á´‡ á´á´‡ á´€s á´€É´ á´€á´…á´ÉªÉ´ ÉªÉ´ á´›Êœá´‡ á´á´œsá´›_á´Šá´ÉªÉ´ á´„Êœá´€á´› à¹: {MUST_JOIN} !")
+        print(f"Please promote me as an admin in the must_join chat: {MUST_JOIN} !")
 

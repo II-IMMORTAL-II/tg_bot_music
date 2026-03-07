@@ -2,7 +2,7 @@
 from pyrogram.types import Message
 
 from IMMORTAL_MUSIC import app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.utils.database import set_loop
 from IMMORTAL_MUSIC.utils.decorators import AdminRightsCheck
 from IMMORTAL_MUSIC.utils.inline import close_markup
@@ -18,9 +18,10 @@ from config import BANNED_USERS
 async def stop_music(cli, message: Message, _, chat_id):
     if not len(message.command) == 1:
         return
-    await NOBITA.stop_stream(chat_id)
+    await IMMORTAL.stop_stream(chat_id)
     await set_loop(chat_id, 0)
     await message.reply_text(
         _["admin_5"].format(message.from_user.mention),
     )
+
 

@@ -8,7 +8,7 @@ from pyrogram.types import CallbackQuery, InputMediaPhoto, Message
 import config
 from IMMORTAL_MUSIC import app
 from IMMORTAL_MUSIC.misc import db
-from IMMORTAL_MUSIC.utils import NOBITABin, get_channeplayCB, seconds_to_min
+from IMMORTAL_MUSIC.utils import IMMORTALBin, get_channeplayCB, seconds_to_min
 from IMMORTAL_MUSIC.utils.database import get_cmode, is_active_chat, is_music_playing
 from IMMORTAL_MUSIC.utils.decorators.language import language, languageCB
 from IMMORTAL_MUSIC.utils.inline import queue_back_markup, queue_markup
@@ -165,18 +165,18 @@ async def queued_tracks(client, CallbackQuery: CallbackQuery, _):
     for x in got:
         j += 1
         if j == 1:
-            msg += f'Streaming :\n\nâœ¨ Title : {x["title"]}\nDuration : {x["dur"]}\nBy : {x["by"]}\n\n'
+            msg += f'Streaming :\n\n- Title : {x["title"]}\nDuration : {x["dur"]}\nBy : {x["by"]}\n\n'
         elif j == 2:
-            msg += f'Queued :\n\nâœ¨ Title : {x["title"]}\nDuration : {x["dur"]}\nBy : {x["by"]}\n\n'
+            msg += f'Queued :\n\n- Title : {x["title"]}\nDuration : {x["dur"]}\nBy : {x["by"]}\n\n'
         else:
-            msg += f'âœ¨ Title : {x["title"]}\nDuration : {x["dur"]}\nBy : {x["by"]}\n\n'
+            msg += f'- Title : {x["title"]}\nDuration : {x["dur"]}\nBy : {x["by"]}\n\n'
     if "Queued" in msg:
         if len(msg) < 700:
             await asyncio.sleep(1)
             return await CallbackQuery.edit_message_text(msg, reply_markup=buttons)
-        if "âœ¨" in msg:
-            msg = msg.replace("âœ¨", "")
-        link = await RAUSHANBin(msg)
+        if "-" in msg:
+            msg = msg.replace("-", "")
+        link = await IMMORTALBin(msg)
         med = InputMediaPhoto(media=link, caption=_["queue_3"].format(link))
         await CallbackQuery.edit_message_media(media=med, reply_markup=buttons)
     else:
@@ -267,4 +267,6 @@ async def queue_back(client, CallbackQuery: CallbackQuery, _):
                     break
         except:
             return
+
+
 

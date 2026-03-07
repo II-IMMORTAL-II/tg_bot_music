@@ -2,7 +2,7 @@
 from pyrogram.types import Message
 
 from IMMORTAL_MUSIC import app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.utils.database import is_music_playing, music_on
 from IMMORTAL_MUSIC.utils.decorators import AdminRightsCheck
 from IMMORTAL_MUSIC.utils.inline import close_markup
@@ -15,8 +15,9 @@ async def resume_com(cli, message: Message, _, chat_id):
     if await is_music_playing(chat_id):
         return await message.reply_text(_["admin_3"])
     await music_on(chat_id)
-    await NOBITA.resume_stream(chat_id)
+    await IMMORTAL.resume_stream(chat_id)
     await message.reply_text(
         _["admin_4"].format(message.from_user.mention), reply_markup=close_markup(_)
     )
+
 

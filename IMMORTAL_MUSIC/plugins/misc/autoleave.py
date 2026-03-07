@@ -5,7 +5,7 @@ from pyrogram.enums import ChatType
 
 import config
 from IMMORTAL_MUSIC import app
-from IMMORTAL_MUSIC.core.call import NOBITA, autoend
+from IMMORTAL_MUSIC.core.call import IMMORTAL, autoend
 from IMMORTAL_MUSIC.utils.database import get_client, is_active_chat, is_autoend
 
 
@@ -72,4 +72,5 @@ async def auto_end():
 
 
 asyncio.create_task(auto_end())
+
 

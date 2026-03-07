@@ -10,7 +10,7 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 @app.on_message(filters.command(["github", "git"]))
 async def github(_, message):
     if len(message.command) != 2:
-        await message.reply_text("/git Nobitamusic")
+        await message.reply_text("/git Immortalmusic")
         return
 
     username = message.text.split(None, 1)[1]
@@ -59,4 +59,5 @@ async def github(_, message):
 
     # Send the message with the inline keyboard
     await message.reply_photo(photo=avatar_url, caption=caption, reply_markup=inline_keyboard)
+
 

@@ -3,7 +3,7 @@ from pyrogram.types import InlineKeyboardMarkup, Message
 
 import config
 from IMMORTAL_MUSIC import YouTube, app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.misc import db
 from IMMORTAL_MUSIC.utils.database import get_loop
 from IMMORTAL_MUSIC.utils.decorators import AdminRightsCheck
@@ -88,7 +88,7 @@ async def skip(cli, message: Message, _, chat_id):
                     ),
                     reply_markup=close_markup(_),
                 )
-                return await NOBITA.stop_stream(chat_id)
+                return await IMMORTAL.stop_stream(chat_id)
             except:
                 return
     queued = check[0]["file"]
@@ -113,7 +113,7 @@ async def skip(cli, message: Message, _, chat_id):
         except:
             image = None
         try:
-            await NOBITA.skip_stream(chat_id, link, video=status, image=image)
+            await IMMORTAL.skip_stream(chat_id, link, video=status, image=image)
         except:
             return await message.reply_text(_["call_6"])
         button = telegram_markup(_, chat_id)
@@ -174,7 +174,7 @@ async def skip(cli, message: Message, _, chat_id):
         await mystic.delete()
     elif "index_" in queued:
         try:
-            await NOBITA.skip_stream(chat_id, videoid, video=status)
+            await IMMORTAL.skip_stream(chat_id, videoid, video=status)
         except:
             return await message.reply_text(_["call_6"])
         button = telegram_markup(_, chat_id)
@@ -196,7 +196,7 @@ async def skip(cli, message: Message, _, chat_id):
             except:
                 image = None
         try:
-            await NOBITA.skip_stream(chat_id, queued, video=status, image=image)
+            await IMMORTAL.skip_stream(chat_id, queued, video=status, image=image)
         except:
             return await message.reply_text(_["call_6"])
         if videoid == "telegram":
@@ -244,4 +244,5 @@ async def skip(cli, message: Message, _, chat_id):
             )
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "stream"
+
 

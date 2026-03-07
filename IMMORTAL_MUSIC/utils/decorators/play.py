@@ -38,7 +38,7 @@ def PlayWrapper(command):
                     [
                         InlineKeyboardButton(
                             text="Êœá´á´¡ á´›á´ Ò“Éªx ?",
-                            callback_data="NOBITAmousAdmin",
+                            callback_data="IMMORTALmousAdmin",
                         ),
                     ]
                 ]
@@ -194,4 +194,5 @@ def PlayWrapper(command):
         )
 
     return wrapper
+
 

@@ -7,7 +7,7 @@ from pyrogram.types import InlineKeyboardMarkup
 
 import config
 from IMMORTAL_MUSIC import Carbon, YouTube, app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.misc import db
 from IMMORTAL_MUSIC.utils.database import add_active_video_chat, is_active_chat
 from IMMORTAL_MUSIC.utils.exceptions import AssistantErr
@@ -17,7 +17,7 @@ from IMMORTAL_MUSIC.utils.inline import (
     stream_markup,
     telegram_markup,
 )
-from IMMORTAL_MUSIC.utils.pastebin import NOBITABin
+from IMMORTAL_MUSIC.utils.pastebin import IMMORTALBin
 from IMMORTAL_MUSIC.utils.stream.queue import put_queue, put_queue_index
 from IMMORTAL_MUSIC.utils.thumbnails import get_thumb
 
@@ -38,7 +38,7 @@ async def stream(
     if not result:
         return
     if forceplay:
-        await NOBITA.force_stop_stream(chat_id)
+        await IMMORTAL.force_stop_stream(chat_id)
     if streamtype == "playlist":
         msg = f"{_['play_19']}\n\n"
         count = 0
@@ -86,7 +86,7 @@ async def stream(
                 except Exception as exc:
                     logging.exception("YouTube download failed for %s: %s", vidid, exc)
                     raise AssistantErr(_["play_14"])
-                await NOBITA.join_call(
+                await IMMORTAL.join_call(
                     chat_id,
                     original_chat_id,
                     file_path,
@@ -123,7 +123,7 @@ async def stream(
         if count == 0:
             return
         else:
-            link = await NOBITABin(msg)
+            link = await IMMORTALBin(msg)
             lines = msg.count("\n")
             if lines >= 17:
                 car = os.linesep.join(msg.split(os.linesep)[:17])
@@ -173,7 +173,7 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await NOBITA.join_call(
+            await IMMORTAL.join_call(
                 chat_id,
                 original_chat_id,
                 file_path,
@@ -233,7 +233,7 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await NOBITA.join_call(chat_id, original_chat_id, file_path, video=None)
+            await IMMORTAL.join_call(chat_id, original_chat_id, file_path, video=None)
             await put_queue(
                 chat_id,
                 original_chat_id,
@@ -285,7 +285,7 @@ async def stream(
         else:
             if not forceplay:
                 db[chat_id] = []
-            await NOBITA.join_call(chat_id, original_chat_id, file_path, video=status)
+            await IMMORTAL.join_call(chat_id, original_chat_id, file_path, video=status)
             await put_queue(
                 chat_id,
                 original_chat_id,
@@ -377,7 +377,7 @@ async def stream(
             db[chat_id][0]["markup"] = "tg"
     elif streamtype == "index":
         link = result
-        title = "ÉªÉ´á´…á´‡x á´Ê€ á´3á´œ8 ÊŸÉªÉ´á´‹"
+        title = "index or m3u8 link"
         duration_min = "00:00"
         if await is_active_chat(chat_id):
             await put_queue_index(
@@ -426,4 +426,5 @@ async def stream(
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "tg"
             await mystic.delete()
+
 

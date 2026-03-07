@@ -2,7 +2,7 @@
 from pyrogram.types import Message
 
 from IMMORTAL_MUSIC import app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 
 welcome = 20
 close = 30
@@ -11,5 +11,6 @@ close = 30
 @app.on_message(filters.video_chat_started, group=welcome)
 @app.on_message(filters.video_chat_ended, group=close)
 async def welcome(_, message: Message):
-    await NOBITA.stop_stream_force(message.chat.id)
+    await IMMORTAL.stop_stream_force(message.chat.id)
+
 

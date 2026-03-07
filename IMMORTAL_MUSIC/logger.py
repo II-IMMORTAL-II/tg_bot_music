@@ -1,6 +1,8 @@
+import io
 import logging
 import sys
-import io
+
+from IMMORTAL_MUSIC.text_normalizer import normalize_text
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
@@ -24,6 +26,28 @@ logging.basicConfig(
     ],
 )
 
+
+class _AsyncioSocketSendFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        # Harmless noisy warning on flaky sockets; keep other asyncio logs visible.
+        message = record.getMessage()
+        if record.name == "asyncio" and "socket.send() raised exception." in message:
+            return False
+        return True
+
+
+class _LogTextNormalizeFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        record.msg = normalize_text(record.msg)
+        if isinstance(record.args, tuple):
+            record.args = tuple(normalize_text(a) for a in record.args)
+        elif isinstance(record.args, dict):
+            record.args = {k: normalize_text(v) for k, v in record.args.items()}
+        return True
+
+
+logging.getLogger().addFilter(_LogTextNormalizeFilter())
+logging.getLogger("asyncio").addFilter(_AsyncioSocketSendFilter())
 logging.getLogger("httpx").setLevel(logging.ERROR)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)

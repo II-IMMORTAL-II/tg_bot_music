@@ -2,7 +2,7 @@
 from pyrogram.types import Message
 
 from IMMORTAL_MUSIC import YouTube, app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.misc import db
 from IMMORTAL_MUSIC.utils import AdminRightsCheck, seconds_to_min
 from IMMORTAL_MUSIC.utils.inline import close_markup
@@ -73,4 +73,5 @@ async def seek_comm(cli, message: Message, _, chat_id):
         text=_["admin_25"].format(seconds_to_min(to_seek), message.from_user.mention),
         reply_markup=close_markup(_),
     )
+
 

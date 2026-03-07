@@ -4,18 +4,57 @@ from datetime import datetime, timedelta
 from typing import Union
 
 from pyrogram import Client
+from pyrogram import errors as pyrogram_errors
 from pyrogram.types import InlineKeyboardMarkup
-from pytgcalls import PyTgCalls, StreamType
-from pytgcalls.exceptions import (
-    AlreadyJoinedError,
-    NodeJSNotInstalled,
-    NoActiveGroupCall,
-    TelegramServerError,
-)
-from pytgcalls.types import Update
-from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
-from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQualityVideo
-from pytgcalls.types.stream import StreamAudioEnded
+
+# Newer Pyrogram builds renamed/removed GroupcallForbidden; older PyTgCalls
+# still imports this symbol.
+if not hasattr(pyrogram_errors, "GroupcallForbidden"):
+    pyrogram_errors.GroupcallForbidden = getattr(
+        pyrogram_errors,
+        "GroupCallInvalid",
+        getattr(pyrogram_errors, "Forbidden", Exception),
+    )
+
+from pytgcalls import PyTgCalls
+try:
+    from pytgcalls import StreamType
+except Exception:
+    StreamType = None
+from pytgcalls.exceptions import NoActiveGroupCall
+try:
+    from pytgcalls.exceptions import AlreadyJoinedError
+except Exception:
+    try:
+        from pytgcalls.exceptions import PyTgCallsAlreadyRunning as AlreadyJoinedError
+    except Exception:
+        class AlreadyJoinedError(Exception):
+            pass
+try:
+    from pytgcalls.exceptions import NodeJSNotInstalled
+except Exception:
+    class NodeJSNotInstalled(Exception):
+        pass
+try:
+    from pytgcalls.exceptions import TelegramServerError
+except Exception:
+    class TelegramServerError(Exception):
+        pass
+try:
+    from pytgcalls.types import (
+        MediaStream,
+        AudioQuality,
+        VideoQuality,
+        StreamEnded,
+        Update,
+    )
+    PYTG_NEW_STREAM_API = True
+except Exception:
+    from pytgcalls.types import Update
+    from pytgcalls.types.input_stream import AudioPiped, AudioVideoPiped
+    from pytgcalls.types.input_stream.quality import HighQualityAudio, MediumQualityVideo
+    from pytgcalls.types.stream import StreamAudioEnded as StreamEnded
+    PYTG_NEW_STREAM_API = False
 
 import config
 from IMMORTAL_MUSIC import LOGGER, YouTube, app
@@ -53,9 +92,50 @@ async def _clear_(chat_id):
 
 
 class Call(PyTgCalls):
+    @staticmethod
+    def _is_supported_client(client) -> bool:
+        return all(
+            hasattr(client, method_name)
+            for method_name in ("join_group_call", "change_stream", "leave_group_call")
+        )
+
+    async def _require_supported_client(self, assistant):
+        if self._is_supported_client(assistant):
+            return
+        raise AssistantErr(
+            "Incompatible PyTgCalls build detected. Install py-tgcalls==0.9.7 "
+            "and run this project on Python 3.10/3.11."
+        )
+
+    @staticmethod
+    def _build_stream(source, video=False, ffmpeg_params=None):
+        if PYTG_NEW_STREAM_API:
+            kwargs = {"audio_parameters": AudioQuality.HIGH}
+            if video:
+                kwargs["video_parameters"] = VideoQuality.SD_480p
+            if ffmpeg_params:
+                kwargs["additional_ffmpeg_parameters"] = ffmpeg_params
+            return MediaStream(source, **kwargs)
+
+        kwargs = {}
+        if ffmpeg_params:
+            kwargs["additional_ffmpeg_parameters"] = ffmpeg_params
+        if video:
+            return AudioVideoPiped(
+                source,
+                audio_parameters=HighQualityAudio(),
+                video_parameters=MediumQualityVideo(),
+                **kwargs,
+            )
+        return AudioPiped(
+            source,
+            audio_parameters=HighQualityAudio(),
+            **kwargs,
+        )
+
     def __init__(self):
         self.userbot1 = Client(
-            name="NOBITAAss1",
+            name="IMMORTALAss1",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING1),
@@ -65,7 +145,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot2 = Client(
-            name="NOBITAAss2",
+            name="IMMORTALAss2",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING2),
@@ -75,7 +155,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot3 = Client(
-            name="NOBITAXAss3",
+            name="IMMORTALXAss3",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING3),
@@ -85,7 +165,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot4 = Client(
-            name="NOBITAXAss4",
+            name="IMMORTALXAss4",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING4),
@@ -95,7 +175,7 @@ class Call(PyTgCalls):
             cache_duration=100,
         )
         self.userbot5 = Client(
-            name="NOBITAAss5",
+            name="IMMORTALAss5",
             api_id=config.API_ID,
             api_hash=config.API_HASH,
             session_string=str(config.STRING5),
@@ -115,6 +195,7 @@ class Call(PyTgCalls):
 
     async def stop_stream(self, chat_id: int):
         assistant = await group_assistant(self, chat_id)
+        await self._require_supported_client(assistant)
         try:
             await _clear_(chat_id)
             await assistant.leave_group_call(chat_id)
@@ -154,6 +235,7 @@ class Call(PyTgCalls):
 
     async def speedup_stream(self, chat_id: int, file_path, speed, playing):
         assistant = await group_assistant(self, chat_id)
+        await self._require_supported_client(assistant)
         if str(speed) != str("1.0"):
             base = os.path.basename(file_path)
             chatdir = os.path.join(os.getcwd(), "playback", str(speed))
@@ -188,23 +270,14 @@ class Call(PyTgCalls):
                 pass
         else:
             out = file_path
-        dur = await asyncio.get_event_loop().run_in_executor(None, check_duration, out)
+        dur = await asyncio.get_running_loop().run_in_executor(None, check_duration, out)
         dur = int(dur)
         played, con_seconds = speed_converter(playing[0]["played"], speed)
         duration = seconds_to_min(dur)
-        stream = (
-            AudioVideoPiped(
-                out,
-                audio_parameters=HighQualityAudio(),
-                video_parameters=MediumQualityVideo(),
-                additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
-            )
-            if playing[0]["streamtype"] == "video"
-            else AudioPiped(
-                out,
-                audio_parameters=HighQualityAudio(),
-                additional_ffmpeg_parameters=f"-ss {played} -to {duration}",
-            )
+        stream = self._build_stream(
+            out,
+            video=playing[0]["streamtype"] == "video",
+            ffmpeg_params=f"-ss {played} -to {duration}",
         )
         if str(db[chat_id][0]["file"]) == str(file_path):
             await assistant.change_stream(chat_id, stream)
@@ -223,6 +296,7 @@ class Call(PyTgCalls):
 
     async def force_stop_stream(self, chat_id: int):
         assistant = await group_assistant(self, chat_id)
+        await self._require_supported_client(assistant)
         try:
             check = db.get(chat_id)
             check.pop(0)
@@ -243,14 +317,8 @@ class Call(PyTgCalls):
         image: Union[bool, str] = None,
     ):
         assistant = await group_assistant(self, chat_id)
-        if video:
-            stream = AudioVideoPiped(
-                link,
-                audio_parameters=HighQualityAudio(),
-                video_parameters=MediumQualityVideo(),
-            )
-        else:
-            stream = AudioPiped(link, audio_parameters=HighQualityAudio())
+        await self._require_supported_client(assistant)
+        stream = self._build_stream(link, video=bool(video))
         await assistant.change_stream(
             chat_id,
             stream,
@@ -258,28 +326,24 @@ class Call(PyTgCalls):
 
     async def seek_stream(self, chat_id, file_path, to_seek, duration, mode):
         assistant = await group_assistant(self, chat_id)
-        stream = (
-            AudioVideoPiped(
-                file_path,
-                audio_parameters=HighQualityAudio(),
-                video_parameters=MediumQualityVideo(),
-                additional_ffmpeg_parameters=f"-ss {to_seek} -to {duration}",
-            )
-            if mode == "video"
-            else AudioPiped(
-                file_path,
-                audio_parameters=HighQualityAudio(),
-                additional_ffmpeg_parameters=f"-ss {to_seek} -to {duration}",
-            )
+        await self._require_supported_client(assistant)
+        stream = self._build_stream(
+            file_path,
+            video=(mode == "video"),
+            ffmpeg_params=f"-ss {to_seek} -to {duration}",
         )
         await assistant.change_stream(chat_id, stream)
 
     async def stream_call(self, link):
         assistant = await group_assistant(self, config.LOGGER_ID)
+        await self._require_supported_client(assistant)
+        kwargs = {}
+        if StreamType:
+            kwargs["stream_type"] = StreamType().pulse_stream
         await assistant.join_group_call(
             config.LOGGER_ID,
-            AudioVideoPiped(link),
-            stream_type=StreamType().pulse_stream,
+            self._build_stream(link, video=True),
+            **kwargs,
         )
         await asyncio.sleep(0.2)
         await assistant.leave_group_call(config.LOGGER_ID)
@@ -293,29 +357,18 @@ class Call(PyTgCalls):
         image: Union[bool, str] = None,
     ):
         assistant = await group_assistant(self, chat_id)
+        await self._require_supported_client(assistant)
         language = await get_lang(chat_id)
         _ = get_string(language)
-        if video:
-            stream = AudioVideoPiped(
-                link,
-                audio_parameters=HighQualityAudio(),
-                video_parameters=MediumQualityVideo(),
-            )
-        else:
-            stream = (
-                AudioVideoPiped(
-                    link,
-                    audio_parameters=HighQualityAudio(),
-                    video_parameters=MediumQualityVideo(),
-                )
-                if video
-                else AudioPiped(link, audio_parameters=HighQualityAudio())
-            )
+        stream = self._build_stream(link, video=bool(video))
         try:
+            kwargs = {}
+            if StreamType:
+                kwargs["stream_type"] = StreamType().pulse_stream
             await assistant.join_group_call(
                 chat_id,
                 stream,
-                stream_type=StreamType().pulse_stream,
+                **kwargs,
             )
         except NoActiveGroupCall:
             raise AssistantErr(_["call_8"])
@@ -377,17 +430,7 @@ class Call(PyTgCalls):
                         original_chat_id,
                         text=_["call_6"],
                     )
-                if video:
-                    stream = AudioVideoPiped(
-                        link,
-                        audio_parameters=HighQualityAudio(),
-                        video_parameters=MediumQualityVideo(),
-                    )
-                else:
-                    stream = AudioPiped(
-                        link,
-                        audio_parameters=HighQualityAudio(),
-                    )
+                stream = self._build_stream(link, video=video)
                 try:
                     await client.change_stream(chat_id, stream)
                 except Exception:
@@ -431,17 +474,7 @@ class Call(PyTgCalls):
                         return await mystic.edit_text(
                             _["call_6"], disable_web_page_preview=True
                         )
-                if video:
-                    stream = AudioVideoPiped(
-                        file_path,
-                        audio_parameters=HighQualityAudio(),
-                        video_parameters=MediumQualityVideo(),
-                    )
-                else:
-                    stream = AudioPiped(
-                        file_path,
-                        audio_parameters=HighQualityAudio(),
-                    )
+                stream = self._build_stream(file_path, video=video)
                 try:
                     await client.change_stream(chat_id, stream)
                 except:
@@ -466,15 +499,7 @@ class Call(PyTgCalls):
                 db[chat_id][0]["mystic"] = run
                 db[chat_id][0]["markup"] = "stream"
             elif "index_" in queued:
-                stream = (
-                    AudioVideoPiped(
-                        videoid,
-                        audio_parameters=HighQualityAudio(),
-                        video_parameters=MediumQualityVideo(),
-                    )
-                    if str(streamtype) == "video"
-                    else AudioPiped(videoid, audio_parameters=HighQualityAudio())
-                )
+                stream = self._build_stream(videoid, video=(str(streamtype) == "video"))
                 try:
                     await client.change_stream(chat_id, stream)
                 except:
@@ -492,17 +517,7 @@ class Call(PyTgCalls):
                 db[chat_id][0]["mystic"] = run
                 db[chat_id][0]["markup"] = "tg"
             else:
-                if video:
-                    stream = AudioVideoPiped(
-                        queued,
-                        audio_parameters=HighQualityAudio(),
-                        video_parameters=MediumQualityVideo(),
-                    )
-                else:
-                    stream = AudioPiped(
-                        queued,
-                        audio_parameters=HighQualityAudio(),
-                    )
+                stream = self._build_stream(queued, video=video)
                 try:
                     await client.change_stream(chat_id, stream)
                 except:
@@ -571,6 +586,12 @@ class Call(PyTgCalls):
 
     async def start(self):
         LOGGER(__name__).info("Starting PyTgCalls Client...\n")
+        if not self._is_supported_client(self.one):
+            LOGGER(__name__).error(
+                "Incompatible PyTgCalls API loaded. "
+                "Expected legacy API used by this project. "
+                "Install py-tgcalls==0.9.7 and use Python 3.10/3.11."
+            )
         async def _start_client(name, client):
             try:
                 await client.start()
@@ -592,34 +613,51 @@ class Call(PyTgCalls):
             await _start_client("Assistant 5", self.five)
 
     async def decorators(self):
-        @self.one.on_kicked()
-        @self.two.on_kicked()
-        @self.three.on_kicked()
-        @self.four.on_kicked()
-        @self.five.on_kicked()
-        @self.one.on_closed_voice_chat()
-        @self.two.on_closed_voice_chat()
-        @self.three.on_closed_voice_chat()
-        @self.four.on_closed_voice_chat()
-        @self.five.on_closed_voice_chat()
-        @self.one.on_left()
-        @self.two.on_left()
-        @self.three.on_left()
-        @self.four.on_left()
-        @self.five.on_left()
-        async def stream_services_handler(_, chat_id: int):
-            await self.stop_stream(chat_id)
+        assistants = [self.one, self.two, self.three, self.four, self.five]
+        if all(hasattr(assistant, "on_stream_end") for assistant in assistants):
+            @self.one.on_kicked()
+            @self.two.on_kicked()
+            @self.three.on_kicked()
+            @self.four.on_kicked()
+            @self.five.on_kicked()
+            @self.one.on_closed_voice_chat()
+            @self.two.on_closed_voice_chat()
+            @self.three.on_closed_voice_chat()
+            @self.four.on_closed_voice_chat()
+            @self.five.on_closed_voice_chat()
+            @self.one.on_left()
+            @self.two.on_left()
+            @self.three.on_left()
+            @self.four.on_left()
+            @self.five.on_left()
+            async def stream_services_handler(_, chat_id: int):
+                await self.stop_stream(chat_id)
 
-        @self.one.on_stream_end()
-        @self.two.on_stream_end()
-        @self.three.on_stream_end()
-        @self.four.on_stream_end()
-        @self.five.on_stream_end()
-        async def stream_end_handler1(client, update: Update):
-            if not isinstance(update, StreamAudioEnded):
-                return
-            await self.change_stream(client, update.chat_id)
+            @self.one.on_stream_end()
+            @self.two.on_stream_end()
+            @self.three.on_stream_end()
+            @self.four.on_stream_end()
+            @self.five.on_stream_end()
+            async def stream_end_handler1(client, update: Update):
+                if not isinstance(update, StreamEnded):
+                    return
+                await self.change_stream(client, update.chat_id)
+        elif all(hasattr(assistant, "on_update") for assistant in assistants):
+            @self.one.on_update()
+            @self.two.on_update()
+            @self.three.on_update()
+            @self.four.on_update()
+            @self.five.on_update()
+            async def stream_end_handler2(client, update: Update):
+                if isinstance(update, StreamEnded):
+                    await self.change_stream(client, update.chat_id)
+        else:
+            LOGGER(__name__).warning(
+                "PyTgCalls decorators are unavailable in this runtime. "
+                "Stream lifecycle hooks were not registered."
+            )
 
 
-NOBITA = Call()
+IMMORTAL = Call()
+
 

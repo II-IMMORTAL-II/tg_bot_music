@@ -8,7 +8,7 @@ import config
 from ..logger import LOGGER
 
 
-class NOBITA(Client):
+class IMMORTAL(Client):
     def __init__(self):
         LOGGER(__name__).info(f"Starting Bot...")
         super().__init__(
@@ -42,7 +42,12 @@ class NOBITA(Client):
         try:
             await self.send_message(
                 chat_id=config.LOGGER_ID,
-                text=f"<u><b>Â» {self.mention} Ê™á´á´› sá´›á´€Ê€á´›á´‡á´… :</b><u>\n\nÉªá´… : <code>{self.id}</code>\nÉ´á´€á´á´‡ : {self.name}\ná´œsá´‡Ê€É´á´€á´á´‡ : @{self.username}",
+                text=(
+                    f"<u><b>> {self.mention} bot started:</b></u>\n\n"
+                    f"id: <code>{self.id}</code>\n"
+                    f"name: {self.name}\n"
+                    f"username: @{self.username}"
+                ),
             )
         except (errors.ChannelInvalid, errors.PeerIdInvalid):
             LOGGER(__name__).error(
@@ -65,8 +70,14 @@ class NOBITA(Client):
                 f"Skipping log group admin check due to invalid LOGGER_ID/access. Reason: {type(ex).__name__}."
             )
 
-        LOGGER(__name__).info(f"Music Bot Started as {self.name}")
+        if self.username:
+            LOGGER(__name__).info(
+                f"Music bot started as @{self.username} (id={self.id})"
+            )
+        else:
+            LOGGER(__name__).info(f"Music bot started as id={self.id}")
 
     async def stop(self):
         await super().stop()
+
 

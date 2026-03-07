@@ -7,7 +7,7 @@ from pytgcalls.exceptions import NoActiveGroupCall
 
 import config
 from IMMORTAL_MUSIC import Apple, Resso, SoundCloud, Spotify, Telegram, YouTube, app
-from IMMORTAL_MUSIC.core.call import NOBITA
+from IMMORTAL_MUSIC.core.call import IMMORTAL
 from IMMORTAL_MUSIC.utils import seconds_to_min, time_to_seconds
 from IMMORTAL_MUSIC.utils.channelplay import get_channeplayCB
 from IMMORTAL_MUSIC.utils.decorators.language import languageCB
@@ -516,7 +516,7 @@ async def RAUSHANmous_check(client, CallbackQuery):
         pass
 
 
-@app.on_callback_query(filters.regex("RAUSHANPlaylists") & ~BANNED_USERS)
+@app.on_callback_query(filters.regex("IMMORTALPlaylists") & ~BANNED_USERS)
 @languageCB
 async def play_playlists_command(client, CallbackQuery, _):
     callback_data = CallbackQuery.data.strip()
@@ -665,4 +665,5 @@ async def slider_queries(client, CallbackQuery, _):
         return await CallbackQuery.edit_message_media(
             media=med, reply_markup=InlineKeyboardMarkup(buttons)
         )
+
 

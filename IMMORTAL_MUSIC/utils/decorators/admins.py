@@ -48,7 +48,7 @@ def AdminRightsCheck(mystic):
                     [
                         InlineKeyboardButton(
                             text="Êœá´á´¡ á´›á´ Ò“Éªx ?",
-                            callback_data="NOBITAmousAdmin",
+                            callback_data="IMMORTALmousAdmin",
                         ),
                     ]
                 ]
@@ -144,7 +144,7 @@ def AdminActual(mystic):
                     [
                         InlineKeyboardButton(
                             text="Êœá´á´¡ á´›á´ Ò“Éªx ?",
-                            callback_data="NOBITAmousAdmin",
+                            callback_data="IMMORTALmousAdmin",
                         ),
                     ]
                 ]
@@ -205,4 +205,5 @@ def ActualAdminCB(mystic):
         return await mystic(client, CallbackQuery, _)
 
     return wrapper
+
 

@@ -6,30 +6,40 @@ afkdb = db.afk
 
 
 async def is_afk(user_id: int) -> bool:
-    user = await afkdb.find_one({"user_id": user_id})
-    if not user:
+    try:
+        user = await afkdb.find_one({"user_id": user_id})
+        if not user:
+            return False, {}
+        return True, user.get("reason", {})
+    except Exception:
         return False, {}
-    return True, user["reason"]
 
 
 async def add_afk(user_id: int, mode):
-    await afkdb.update_one(
-        {"user_id": user_id}, {"$set": {"reason": mode}}, upsert=True
-    )
+    try:
+        await afkdb.update_one(
+            {"user_id": user_id}, {"$set": {"reason": mode}}, upsert=True
+        )
+    except Exception:
+        return
 
 
 async def remove_afk(user_id: int):
-    user = await afkdb.find_one({"user_id": user_id})
-    if user:
-        return await afkdb.delete_one({"user_id": user_id})
+    try:
+        user = await afkdb.find_one({"user_id": user_id})
+        if user:
+            return await afkdb.delete_one({"user_id": user_id})
+    except Exception:
+        return
 
 
 async def get_afk_users() -> list:
-    users = afkdb.find({"user_id": {"$gt": 0}})
-    if not users:
+    try:
+        users = afkdb.find({"user_id": {"$gt": 0}})
+        users_list = []
+        for user in await users.to_list(length=1000000000):
+            users_list.append(user)
+        return users_list
+    except Exception:
         return []
-    users_list = []
-    for user in await users.to_list(length=1000000000):
-        users_list.append(user)
-    return users_list
 
