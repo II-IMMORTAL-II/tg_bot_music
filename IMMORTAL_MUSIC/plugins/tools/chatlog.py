@@ -1,7 +1,7 @@
 ﻿import random
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardButton, InlineKeyboardMarkup
-from config import LOGGER_ID as LOG_GROUP_ID
+from config import LOGGER_ID as LOG_GROUP_ID, START_IMG_URL
 from IMMORTAL_MUSIC import app 
 from pyrogram.errors import RPCError
 from typing import Union, Optional
@@ -16,7 +16,7 @@ photo = [
     "https://telegra.ph/file/a7d663cd2de689b811729.jpg",
     "https://telegra.ph/file/6f19dc23847f5b005e922.jpg",
     "https://telegra.ph/file/2973150dd62fd27a3a6ba.jpg",
-    "https://files.catbox.moe/tcz7s6.jpg",
+    START_IMG_URL,
 ]
 
 @app.on_message(filters.new_chat_members, group=2)

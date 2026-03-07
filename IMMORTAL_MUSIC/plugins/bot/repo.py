@@ -44,7 +44,7 @@ InlineKeyboardButton("ð—–Êœá´€É´É´á´‡ÊŸ", url=config.SUPP
     reply_markup = InlineKeyboardMarkup(buttons)
     
     await msg.reply_photo(
-        photo="https://files.catbox.moe/tcz7s6.jpg",
+        photo=config.START_IMG_URL,
         caption=start_txt.format(owner=owner_tag),
         reply_markup=reply_markup
     )

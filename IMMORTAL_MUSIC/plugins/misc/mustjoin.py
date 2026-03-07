@@ -22,7 +22,7 @@ async def must_join_channel(app: Client, msg: Message):
                 link = chat_info.invite_link
             try:
                 await msg.reply_photo(
-                    photo="https://files.catbox.moe/tcz7s6.jpg", caption=f"According to my database, you have not joined [Support]({link}) yet. Join [Support]({link}) and then start me again.",
+                    photo=config.START_IMG_URL, caption=f"According to my database, you have not joined [Support]({link}) yet. Join [Support]({link}) and then start me again.",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [

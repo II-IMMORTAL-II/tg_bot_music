@@ -9,7 +9,7 @@ from IMMORTAL_MUSIC.utils.database import add_sudo, remove_sudo
 from IMMORTAL_MUSIC.utils.decorators.language import language
 from IMMORTAL_MUSIC.utils.extraction import extract_user
 from IMMORTAL_MUSIC.utils.inline import close_markup
-from config import BANNED_USERS, OWNER_ID
+from config import BANNED_USERS, OWNER_ID, START_IMG_URL
 
 
 
@@ -54,7 +54,7 @@ async def sudoers_list(client, message: Message):
     reply_markups = InlineKeyboardMarkup(keyboard)
   
     #await message.reply_photo(photo="https://telegra.ph/file/4e89ccb36bde6833e9ed0.mp4", caption="**Â» á´„Êœá´‡á´„á´‹ sá´œá´…á´ ÊŸÉªsá´› Ê™Ê É¢Éªá´ á´‡É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´.**\n\n**Â» É´á´á´›á´‡:**  á´É´ÊŸÊ sá´œá´…á´ á´œsá´‡Ê€s á´„á´€É´ á´ Éªá´‡á´¡. ", reply_markup=reply_markups)
-    await message.reply_video(video="https://files.catbox.moe/tcz7s6.jpg", caption="**Â» á´„Êœá´‡á´„á´‹ sá´œá´…á´ ÊŸÉªsá´› Ê™Ê É¢Éªá´ á´‡É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´.**\n\n**Â» É´á´á´›á´‡:**  á´É´ÊŸÊ sá´œá´…á´ á´œsá´‡Ê€s á´„á´€É´ á´ Éªá´‡á´¡. ", reply_markup=reply_markups)
+    await message.reply_photo(photo=START_IMG_URL, caption="**Â» á´„Êœá´‡á´„á´‹ sá´œá´…á´ ÊŸÉªsá´› Ê™Ê É¢Éªá´ á´‡É´ Ê™á´‡ÊŸá´á´¡ Ê™á´œá´›á´›á´É´.**\n\n**Â» É´á´á´›á´‡:**  á´É´ÊŸÊ sá´œá´…á´ á´œsá´‡Ê€s á´„á´€É´ á´ Éªá´‡á´¡. ", reply_markup=reply_markups)
     
 
 @app.on_callback_query(filters.regex("^check_sudo_list$"))
@@ -111,4 +111,3 @@ async def del_all_sudo(client, message: Message, _):
                 SUDOERS.remove(user_id)
                 count -= 1
     await message.reply_text(f"Removed {count} users from the sudo list.")
-
