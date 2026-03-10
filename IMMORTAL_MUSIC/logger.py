@@ -1,5 +1,6 @@
 import io
 import logging
+import os
 import sys
 
 from IMMORTAL_MUSIC.text_normalizer import normalize_text
@@ -15,15 +16,20 @@ if hasattr(sys.stdout, "buffer"):
         sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True
     )
 
+handlers = [logging.StreamHandler(LOG_STREAM)]
+try:
+    file_path = os.environ.get("LOG_FILE", "log.txt")
+    handlers.insert(0, logging.FileHandler(file_path, encoding="utf-8"))
+except OSError:
+    # Running on read-only filesystem; stream-only logging keeps the app alive.
+    pass
+
 logging.basicConfig(
     force=True,
     level=logging.INFO,
     format="[%(asctime)s - %(levelname)s] - %(name)s - %(message)s",
     datefmt="%d-%b-%y %H:%M:%S",
-    handlers=[
-        logging.FileHandler("log.txt", encoding="utf-8"),
-        logging.StreamHandler(LOG_STREAM),
-    ],
+    handlers=handlers,
 )
 
 

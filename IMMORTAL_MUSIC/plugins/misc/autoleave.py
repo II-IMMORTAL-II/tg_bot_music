@@ -59,7 +59,7 @@ async def auto_end():
                     continue
                 autoend[chat_id] = {}
                 try:
-                    await VILLAIN.stop_stream(chat_id)
+                    await IMMORTAL.stop_stream(chat_id)
                 except:
                     continue
                 try:

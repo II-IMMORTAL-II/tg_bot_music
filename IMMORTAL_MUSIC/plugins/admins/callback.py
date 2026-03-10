@@ -156,7 +156,7 @@ async def del_back_playlist(client, CallbackQuery, _):
         )
     elif command == "Stop" or command == "End":
         await CallbackQuery.answer()
-        await VILLAIN.stop_stream(chat_id)
+        await IMMORTAL.stop_stream(chat_id)
         await set_loop(chat_id, 0)
         await CallbackQuery.message.reply_text(
             _["admin_5"].format(mention),
@@ -164,7 +164,7 @@ async def del_back_playlist(client, CallbackQuery, _):
     elif command == "Skip" or command == "Replay":
         check = db.get(chat_id)
         if command == "Skip":
-            txt = f"âž» sá´›Ê€á´‡á´€á´ sá´‹Éªá´©á´©á´‡á´… ðŸŽ„\nâ”‚ \nâ””Ê™Ê : {mention} ðŸ¥€"
+            txt = f"Stream skipped.\nBy: {mention}"
             popped = None
             try:
                 popped = check.pop(0)
@@ -172,7 +172,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                     await auto_clean(popped)
                 if not check:
                     await CallbackQuery.edit_message_text(
-                        f"âž» sá´›Ê€á´‡á´€á´ sá´‹Éªá´©á´©á´‡á´… ðŸŽ„\nâ”‚ \nâ””Ê™Ê : {mention} ðŸ¥€"
+                        f"Stream skipped.\nBy: {mention}"
                     )
                     await CallbackQuery.message.reply_text(
                         text=_["admin_6"].format(
@@ -181,13 +181,13 @@ async def del_back_playlist(client, CallbackQuery, _):
                         
                     )
                     try:
-                        return await VILLAIN.stop_stream(chat_id)
+                        return await IMMORTAL.stop_stream(chat_id)
                     except:
                         return
             except:
                 try:
                     await CallbackQuery.edit_message_text(
-                        f"âž» sá´›Ê€á´‡á´€á´ sá´‹Éªá´©á´©á´‡á´… ðŸŽ„\nâ”‚ \nâ””Ê™Ê : {mention} ðŸ¥€"
+                        f"Stream skipped.\nBy: {mention}"
                     )
                     await CallbackQuery.message.reply_text(
                         text=_["admin_6"].format(
@@ -198,7 +198,7 @@ async def del_back_playlist(client, CallbackQuery, _):
                 except:
                     return
         else:
-            txt = f"âž» sá´›Ê€á´‡á´€á´ Ê€á´‡-á´˜ÊŸá´€Êá´‡á´… ðŸŽ„\nâ”‚ \nâ””Ê™Ê : {mention} ðŸ¥€"
+            txt = f"Stream replayed.\nBy: {mention}"
         await CallbackQuery.answer()
         queued = check[0]["file"]
         title = (check[0]["title"]).title()
@@ -421,5 +421,3 @@ async def markup_timer():
 
 
 asyncio.create_task(markup_timer())
-
-

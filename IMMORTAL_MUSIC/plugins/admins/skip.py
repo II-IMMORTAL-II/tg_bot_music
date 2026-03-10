@@ -50,7 +50,7 @@ async def skip(cli, message: Message, _, chat_id):
                                         ),
                                         reply_markup=close_markup(_),
                                     )
-                                    await VILLAIN.stop_stream(chat_id)
+                                    await IMMORTAL.stop_stream(chat_id)
                                 except:
                                     return
                                 break
@@ -77,7 +77,7 @@ async def skip(cli, message: Message, _, chat_id):
                     reply_markup=close_markup(_),
                 )
                 try:
-                    return await VILLAIN.stop_stream(chat_id)
+                    return await IMMORTAL.stop_stream(chat_id)
                 except:
                     return
         except:
@@ -244,5 +244,4 @@ async def skip(cli, message: Message, _, chat_id):
             )
             db[chat_id][0]["mystic"] = run
             db[chat_id][0]["markup"] = "stream"
-
 

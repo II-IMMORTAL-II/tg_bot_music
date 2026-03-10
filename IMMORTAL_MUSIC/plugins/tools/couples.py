@@ -14,7 +14,7 @@ import config
 POLICE = [
     [
         InlineKeyboardButton(
-            text="Made by Bolluu",
+            text="Made by BILLU",
             url=f"https://t.me/{config.OWNER_USERNAME}",
         ),
     ],

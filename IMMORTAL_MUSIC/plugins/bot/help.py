@@ -1,7 +1,7 @@
 from typing import Union
 
 from pyrogram import filters, types
-from pyrogram.types import InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 
 from IMMORTAL_MUSIC import app
 from IMMORTAL_MUSIC.utils import help_pannel
@@ -22,6 +22,103 @@ EXTRA_HELP = {
     "hb23": "**Action Commands**\n\n`/ban` ` /unban`\n`/mute` ` /unmute`\n`/kick`\n`/tmute` ` /tban`",
     "hb24": "**Search Commands**\n\n`/google <query>`\n`/app <query>`\n`/stack <query>`\n`/image <query>`",
 }
+
+
+def _extract_filter_commands(flt) -> set:
+    commands = set()
+    if not flt:
+        return commands
+
+    direct = getattr(flt, "commands", None)
+    if direct:
+        commands.update(direct)
+
+    for attr in ("base", "other"):
+        child = getattr(flt, attr, None)
+        if child is not None:
+            commands.update(_extract_filter_commands(child))
+
+    return commands
+
+
+def _normalize_command_name(command: str) -> str:
+    name = str(command).strip().lower().lstrip("/")
+    if not name or any(ch.isspace() for ch in name):
+        return ""
+
+    username = getattr(app, "username", None)
+    if username:
+        suffix = f"@{username.lower()}"
+        if name.endswith(suffix):
+            name = name[: -len(suffix)]
+
+    return name
+
+
+def _all_registered_commands() -> list:
+    commands = set()
+    dispatcher = getattr(app, "dispatcher", None)
+    groups = getattr(dispatcher, "groups", {}) if dispatcher else {}
+
+    for handlers in groups.values():
+        for handler in handlers:
+            commands.update(_extract_filter_commands(getattr(handler, "filters", None)))
+
+    normalized = set()
+    for command in commands:
+        name = _normalize_command_name(command)
+        if name:
+            normalized.add(name)
+
+    return sorted(normalized)
+
+
+def _all_commands_page(page: int):
+    page_size = 45
+    commands = _all_registered_commands()
+    if not commands:
+        return "No commands found.", 1, 1
+
+    total_pages = (len(commands) + page_size - 1) // page_size
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * page_size
+    chunk = commands[start : start + page_size]
+
+    text = (
+        f"All Commands ({len(commands)})\n"
+        f"Page {page}/{total_pages}\n\n"
+        + "\n".join(f"• /{cmd}" for cmd in chunk)
+    )
+    return text, page, total_pages
+
+
+def _all_commands_markup(_, page: int, total_pages: int):
+    rows = []
+    nav = []
+    if page > 1:
+        nav.append(
+            InlineKeyboardButton(
+                text=_.get("BACK_PAGE", "<"), callback_data=f"help_all {page - 1}"
+            )
+        )
+    if page < total_pages:
+        nav.append(
+            InlineKeyboardButton(
+                text=_.get("NEXT_PAGE", ">"), callback_data=f"help_all {page + 1}"
+            )
+        )
+    if nav:
+        rows.append(nav)
+
+    rows.append(
+        [
+            InlineKeyboardButton(
+                text=_.get("BACK_BUTTON", "Back"), callback_data="settings_back_helper"
+            ),
+            InlineKeyboardButton(text=_.get("CLOSE_BUTTON", "Close"), callback_data="close"),
+        ]
+    )
+    return InlineKeyboardMarkup(rows)
 
 
 @app.on_message(filters.command(["help"]) & filters.private & ~BANNED_USERS)
@@ -105,3 +202,17 @@ async def helper_cb(client, CallbackQuery, _):
         return
 
     await CallbackQuery.edit_message_text(text, reply_markup=keyboard)
+
+
+@app.on_callback_query(filters.regex("^help_all") & ~BANNED_USERS)
+@languageCB
+async def help_all_cb(client, CallbackQuery, _):
+    page = 1
+    parts = CallbackQuery.data.split(maxsplit=1)
+    if len(parts) > 1 and parts[1].isdigit():
+        page = int(parts[1])
+
+    text, page, total_pages = _all_commands_page(page)
+    await CallbackQuery.edit_message_text(
+        text, reply_markup=_all_commands_markup(_, page, total_pages)
+    )

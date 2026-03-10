@@ -85,6 +85,10 @@ def help_pannel(_, page: Union[int, None] = 1):
         ],
         [
             InlineKeyboardButton(
+                text=_htext(_, "ALL_COMMANDS", "All Commands"),
+                callback_data="help_all 1",
+            ),
+            InlineKeyboardButton(
                 text=_htext(_, "NEXT_PAGE", ">"),
                 callback_data="help_page 2",
             ),
@@ -139,6 +143,10 @@ def help_pannel(_, page: Union[int, None] = 1):
             ),
         ],
         [
+            InlineKeyboardButton(
+                text=_htext(_, "ALL_COMMANDS", "All Commands"),
+                callback_data="help_all 1",
+            ),
             InlineKeyboardButton(
                 text=_htext(_, "BACK_PAGE", "<"),
                 callback_data="help_page 1",
